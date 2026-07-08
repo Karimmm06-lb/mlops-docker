@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - APP_NAME=Karim MLOps
+
+  api:
+    build: .
+    ports:
+      - "6001:6000"
+    environment:
+      - APP_NAME=API
+    command: python api.py
