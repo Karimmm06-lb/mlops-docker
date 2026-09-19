@@ -7,15 +7,27 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Installer les dépendances
+        run: |
+          pip install -r requirements.txt
+          pip install pytest httpx
+      - name: Lancer les tests
+        run: pytest -v
 
-      - name: Build des images Docker (compose)
+  build:
+    needs: test          # ne build que si les tests passent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build des images Docker
         run: docker compose build
-
       - name: Vérifier que les conteneurs démarrent
         run: |
           docker compose up -d
